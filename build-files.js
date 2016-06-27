@@ -37,6 +37,15 @@ exports.scripts = [
 	},
 	{
 		files: [
+			'app/app.js',
+			'app/app.config.js',
+			'app/**/*.module.js',
+			'app/**/*.config.js',
+			'app/**/*.constant.js',
+			'app/**/*.service.js',
+			'app/**/*.filter.js',
+			'app/**/*.directive.js',
+			'app/**/*.controller.js',
 			'app/**/*.js'
 		],
 

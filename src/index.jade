@@ -9,8 +9,10 @@ html(lang='en')
       meta(name='author', content='')
       each src in styles
          link(rel='stylesheet', type='text/css', href=src)
-   body
-      .container-fluid(ui-view)
+   body(ng-app='app')
+      .container-fluid(ui-view='header')
+      .container-fluid(ui-view='content')
+      .container-fluid(ui-view='footer')
       each src in scripts
          script(src=src)
 

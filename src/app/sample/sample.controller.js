@@ -1,3 +1,10 @@
-/**
- * Created by nikolas on 02.06.16.
- */
+(function(){
+    'use strict';
+
+    angular
+        .module('app.sample')
+        .controller('SampleController', function(utils){
+            var vm = this;
+            vm.message = 'Great! It work\'s!'
+        });
+})();

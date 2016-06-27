@@ -1,2 +1,4 @@
 .idea
+build
+src/components
 node_modules
