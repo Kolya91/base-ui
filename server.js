@@ -1,6 +1,6 @@
 /**
  *
- * Simple node server for Petroom client
+ * Simple node server for base-ui angular project
  *
  * */
 var express = require('express');
@@ -17,5 +17,5 @@ app.get('*', function(req, res) {
 });
 
 var server = app.listen(7007, function () {
-	console.log('Petroom app listening at http://localhost:7007');
+	console.log('Application is listening at http://localhost:7007');
 });
