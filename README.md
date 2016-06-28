@@ -9,4 +9,12 @@
 7. Start server (simple localhost) for use application in browser `node server.js`
 8. Browse application `http://localhost:7007`
 
+### Next TODOs:
+1. Add unit tets base structure
+2. Add livereload
+3. Finish with production task (min files)
+
+### Project should be rebuild after add new files 
+(`gulp build` or `gulp live`)
+
 ## This project is in progress!!!
