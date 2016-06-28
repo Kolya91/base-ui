@@ -1,3 +1,11 @@
-/**
- * Created by nikolas on 02.06.16.
- */
+(function(){
+    'use strict';
+
+    /**
+     *
+     * Should content component directive function
+     * Now it is only empty file :)
+     *
+     */
+
+})();

@@ -1,3 +1,5 @@
-/**
- * Created by nikolas on 02.06.16.
- */
+(function() {
+    'use strict';
+
+    angular.module('app.footer', []);
+})();

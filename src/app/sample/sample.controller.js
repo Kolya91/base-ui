@@ -3,7 +3,7 @@
 
     angular
         .module('app.sample')
-        .controller('SampleController', function(utils){
+        .controller('SampleController', function(){
             var vm = this;
             vm.message = 'Great! It work\'s!'
         });
