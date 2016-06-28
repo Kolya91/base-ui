@@ -10,9 +10,10 @@ html(lang='en')
       each src in styles
          link(rel='stylesheet', type='text/css', href=src)
    body(ng-app='app')
-      .container-fluid(ui-view='header')
+      section(ui-view='header')
       .container-fluid(ui-view='content')
-      .container-fluid(ui-view='footer')
+      section(ui-view='footer')
+
       each src in scripts
          script(src=src)
 

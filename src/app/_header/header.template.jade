@@ -6,37 +6,16 @@ nav.navbar.navbar-default
                 span.icon-bar
                 span.icon-bar
                 span.icon-bar
-            a.navbar-brand(href='#') Brand
+            a.navbar-brand(ui-sref='app.sample') Simple header
         #bs-example-navbar-collapse-1.collapse.navbar-collapse
             ul.nav.navbar-nav
                 li.active
-                    a(href='#')
+                    a(ui-sref='app.sample')
                         | Link
                         span.sr-only (current)
                 li
-                    a(href='#') Link
-                li.dropdown
-                    a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
-                        | Dropdown
-                        span.caret
-                    ul.dropdown-menu
-                        li
-                            a(href='#') Action
-                        li
-                            a(href='#') Another action
-            form.navbar-form.navbar-left(role='search')
-                .form-group
-                    input.form-control(type='text', placeholder='Search')
-                button.btn.btn-default(type='submit') Submit
+                    a(ui-sref='app.sample') Link
+
             ul.nav.navbar-nav.navbar-right
                 li
-                    a(href='#') Link
-                li.dropdown
-                    a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
-                        | Dropdown
-                        span.caret
-                    ul.dropdown-menu
-                        li
-                            a(href='#') Action
-                        li
-                            a(href='#') Another action
+                    a(ui-sref='app.sample') Link

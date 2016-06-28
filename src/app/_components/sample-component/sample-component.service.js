@@ -10,12 +10,7 @@
     angular
         .module('app.components.sample-component')
         .factory('utils', function(){
-            var exports = {
-                someMethod: function(){
-                    return 'It work\'s';
-                }
-            };
-
+            var exports = {};
             return exports;
         });
 })();
