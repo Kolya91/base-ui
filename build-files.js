@@ -76,14 +76,14 @@ exports.styles = [
 	//	min: true,
 	//	less: true
 	//},
-	{
-		files: [
-			'app/**/*.less'
-		],
-		concat: 'styles/app.css',
-		min: true,
-		less: true
-	},
+	//{
+	//	files: [
+	//		'app/**/*.less'
+	//	],
+	//	concat: 'styles/app.css',
+	//	min: true,
+	//	less: true
+	//},
 	{
 		files: [
 			'fonts/*.css',
