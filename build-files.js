@@ -3,24 +3,16 @@ exports.scripts = [
 		files: [
 			'components/lodash/lodash.js'
 		],
+
 		concat: 'scripts/libs.js'
 	},
 	{
 		files: [
 			'components/angular/angular.js',
-			'components/angular-ui-router/release/angular-ui-router.min.js',
-			[
-				'components/angular-sanitize/angular-sanitize.js',
-				'components/angular-sanitize/angular-sanitize.min.js'
-			],
-			[
-				'components/angular-animate/angular-animate.js',
-				'components/angular-animate/angular-animate.min.js'
-			],
-			[
-				'components/angular-local-storage/dist/angular-local-storage.js',
-				'components/angular-local-storage/dist/angular-local-storage.min.js'
-			]
+			'components/angular-ui-router/release/angular-ui-router.js',
+			'components/angular-sanitize/angular-sanitize.js',
+			'components/angular-animate/angular-animate.js',
+			'components/angular-local-storage/dist/angular-local-storage.js'
 		],
 
 		concat: 'scripts/ng-core.js'
@@ -62,28 +54,16 @@ exports.styles = [
 	},
 	{
 		files: [
-			'components/bootstrap/less/bootstrap.less',
-			'components/font-awesome/less/font-awesome.less'
+			'components/bootstrap/dist/css/bootstrap.css',
+			'components/bootstrap/dist/css/bootstrap.css.map'
+		]
+	},
+	{
+		files: [
+			'app/app.less'
 		],
-		min: true,
 		less: true
 	},
-	//{
-	//	files: [
-	//		'styles/components/reset.less'
-	//	],
-	//	concat: 'styles/reset.css',
-	//	min: true,
-	//	less: true
-	//},
-	//{
-	//	files: [
-	//		'app/**/*.less'
-	//	],
-	//	concat: 'styles/app.css',
-	//	min: true,
-	//	less: true
-	//},
 	{
 		files: [
 			'fonts/*.css',
@@ -92,10 +72,5 @@ exports.styles = [
 			'components/font-awesome/fonts/**/*'
 		],
 		concat: 'styles/fonts.css'
-	},
-	{
-		files: [
-			'assets/**/*'
-		]
 	}
 ];

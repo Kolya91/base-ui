@@ -1,7 +1,6 @@
 'use strict';
 
 var gulp = require('gulp'),
-	gutil = require('gulp-util'),
 	less = require('gulp-less'),
 	jade = require('gulp-jade'),
 	plumber = require('gulp-plumber'),
@@ -11,8 +10,7 @@ var gulp = require('gulp'),
 	_ = require('lodash'),
 	glob = require('glob'),
 	es = require('event-stream'),
-	filter = require('gulp-filter'),
-	newer = require('gulp-newer');
+	filter = require('gulp-filter');
 
 var files = require('./build-files.js');
 
@@ -20,32 +18,6 @@ var paths = {
 	src: 'src',
 	build: 'build'
 };
-
-function toArray(a) {
-	if(undefined === a) {
-		return [];
-	}
-
-	return Array.isArray(a) ? a : [a];
-}
-
-function src(conf, production){
-	var _ignore = filter(function(file){
-		return '_' !== path.basename(file.path).charAt(0);
-	});
-
-	var _src = paths.src;
-	var _files = toArray(conf.files).map(function (f) {
-		if(Array.isArray(f)) {
-			f = f[production ? 1 : 0];
-		}
-		return path.join(_src, f);
-	});
-
-	return gulp.src(_files, {
-		base: path.join(_src, conf.base || '')
-	}).pipe(_ignore);
-}
 
 function destPath(conf) {
 	return path.join(paths.build, conf.out || '');
@@ -59,17 +31,29 @@ gulp.task('clean', function () {
 	return del(paths.build);
 });
 
-gulp.task('less', function () {
-	return gulp.src('./src/app/app.less')
-		.pipe(less())
-		.pipe(gulp.dest('./build/app'));
+gulp.task('scripts', function() {
+	return es.merge(files.scripts.map(function (conf) {
+		var _files, stream;
+
+		_files = conf.files.map(function(f){
+			return path.join(paths.src, f);
+		});
+
+		stream = gulp.src(_files, { base: paths.src }).pipe(plumber());
+
+		return dest(conf, stream);
+	}));
 });
 
 gulp.task('styles', function () {
 	return es.merge(files.styles.map(function (conf) {
+		var _files, stream;
 
-		var stream = src(conf)
-			.pipe(plumber());
+		_files = conf.files.map(function(f){
+			return path.join(paths.src, f);
+		});
+
+		stream = gulp.src(_files, { base: paths.src }).pipe(plumber());
 
 		if(conf.less) {
 			stream = stream.pipe(less());
@@ -80,23 +64,14 @@ gulp.task('styles', function () {
 });
 
 gulp.task('views', function() {
-	return gulp.src('./src/app/**/*.jade')
+	return gulp.src('./src/app/**/*.jade', { base: paths.src })
 		.pipe(jade())
-		.pipe(gulp.dest('./build/app'))
+		.pipe(gulp.dest(paths.build))
 });
 
 gulp.task('assets', function() {
-	return gulp.src('./src/assets/**/*')
-		.pipe(gulp.dest('./build/assets'))
-});
-
-gulp.task('scripts', function() {
-	return es.merge(files.scripts.map(function (conf) {
-		var stream = src(conf)
-			.pipe(plumber())
-			.pipe(gulp.dest(paths.build));
-		return dest(conf, stream);
-	}));
+	return gulp.src('./src/assets/**/*', { base: paths.src })
+		.pipe(gulp.dest(paths.build))
 });
 
 gulp.task('index', function () {
@@ -112,7 +87,7 @@ gulp.task('index', function () {
 
 	function listFiles(source) {
 		var res = source.map(function (conf) {
-			return toArray(conf.files).map(function (pattern) {
+			return conf.files.map(function (pattern) {
 				if(Array.isArray(pattern)) {
 					pattern = pattern[0];
 				}
@@ -156,7 +131,7 @@ gulp.task('watch', function () {
 
 gulp.task('build-develop', function(next) {
 	//run('clean', next);
-	return run('clean', ['less', 'styles', 'scripts', 'index', 'views', 'assets'], next);
+	return run('clean', ['styles', 'scripts', 'index', 'assets'], next);
 });
 
 gulp.task('build', function(next){
