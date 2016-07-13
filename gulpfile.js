@@ -10,52 +10,66 @@ var gulp = require('gulp'),
 	_ = require('lodash'),
 	glob = require('glob'),
 	es = require('event-stream'),
-	filter = require('gulp-filter');
+	filter = require('gulp-filter'),
+	html2js = require('gulp-ng-html2js'),
+	concat = require('gulp-concat'),
+	annotate = require('gulp-ng-annotate');
 
 var files = require('./build-files.js');
 
-var paths = {
-	src: 'src',
-	build: 'build'
+var config = {
+	sources: {
+		index: './src/index.jade',
+		jade: './src/app/**/*.jade',
+		assets: './src/assets/**/*',
+		styles: './src/**/*.less',
+		scripts: './src/app/**/*.js'
+	},
+	paths: {
+		src: 'src',
+		build: 'build'
+	}
 };
 
-function destPath(conf) {
-	return path.join(paths.build, conf.out || '');
+function src(conf){
+	var _files = conf.files.map(function(f){
+		return path.join(config.paths.src, f);
+	});
+
+	return gulp.src(_files, { base: config.paths.src }).pipe(plumber());
 }
 
 function dest(conf, stream) {
-	return stream.pipe(gulp.dest(destPath(conf)));
+	var destPath = path.join(config.paths.build, conf.out || '');
+	return stream.pipe(gulp.dest(destPath));
+}
+
+function getModuleName(file) {
+	var pathParts, index, moduleName;
+	pathParts = file.path.split('/');
+	index = _.findLastIndex(pathParts, function (item) { return item === 'app';	});
+	moduleName = _.join(_.slice(pathParts, index, pathParts.length - 1), '.');
+
+	return moduleName.replace(/_[a-z]/g, function (match) {
+		return match.replace('_', '');
+	});
 }
 
 gulp.task('clean', function () {
-	return del(paths.build);
+	return del(config.paths.build);
 });
 
 gulp.task('scripts', function() {
 	return es.merge(files.scripts.map(function (conf) {
-		var _files, stream;
-
-		_files = conf.files.map(function(f){
-			return path.join(paths.src, f);
-		});
-
-		stream = gulp.src(_files, { base: paths.src }).pipe(plumber());
-
-		return dest(conf, stream);
+		return dest(conf, src(conf));
 	}));
 });
 
 gulp.task('styles', function () {
 	return es.merge(files.styles.map(function (conf) {
-		var _files, stream;
+		var stream = src(conf);
 
-		_files = conf.files.map(function(f){
-			return path.join(paths.src, f);
-		});
-
-		stream = gulp.src(_files, { base: paths.src }).pipe(plumber());
-
-		if(conf.less) {
+		if (conf.less) {
 			stream = stream.pipe(less());
 		}
 
@@ -64,14 +78,17 @@ gulp.task('styles', function () {
 });
 
 gulp.task('views', function() {
-	return gulp.src('./src/app/**/*.jade', { base: paths.src })
+	return gulp.src(config.sources.jade, { base: config.paths.src })
 		.pipe(jade())
-		.pipe(gulp.dest(paths.build))
+		.pipe(html2js({
+			moduleName: getModuleName
+		}))
+		.pipe(gulp.dest(config.paths.build))
 });
 
 gulp.task('assets', function() {
-	return gulp.src('./src/assets/**/*', { base: paths.src })
-		.pipe(gulp.dest(paths.build))
+	return gulp.src(config.sources.assets, { base: config.paths.src })
+		.pipe(gulp.dest(config.paths.build))
 });
 
 gulp.task('index', function () {
@@ -81,36 +98,25 @@ gulp.task('index', function () {
 		};
 	}
 
-	function skipFilter(name){
-		return '_' !== path.basename(name).charAt(0);
-	}
-
 	function listFiles(source) {
 		var res = source.map(function (conf) {
 			return conf.files.map(function (pattern) {
-				if(Array.isArray(pattern)) {
-					pattern = pattern[0];
-				}
-				return glob.sync(pattern, {cwd: paths.src});
+				pattern = pattern.replace(/\.(less)$/, '.css');
+
+				return glob.sync(pattern, { cwd: config.paths.build });
 			});
 		});
 
 		return _.uniq(_.flattenDeep(res, true));
 	}
 
-
 	var _scripts = listFiles(files.scripts)
-		.filter(extFilter('.js'))
-		.filter(skipFilter);
+		.filter(extFilter('.js'));
 
 	var _styles = listFiles(files.styles)
-		.map(function(name){
-			return name.replace(/\.(less)$/, '.css');
-		})
-		.filter(extFilter('.css'))
-		.filter(skipFilter);
+		.filter(extFilter('.css'));
 
-	return gulp.src('src/index.jade')
+	return gulp.src(config.sources.index)
 		.pipe(jade({
 			pretty: true,
 			locals: {
@@ -119,25 +125,90 @@ gulp.task('index', function () {
 				styles: _styles
 			}
 		}))
-		.pipe(gulp.dest(paths.build));
+		.pipe(gulp.dest(config.paths.build));
 });
 
 gulp.task('watch', function () {
-	gulp.watch('./src/*.jade', ['index']);
-	gulp.watch('./src/app/**/*.jade', ['views']);
-	gulp.watch('./src/**/*.less', ['less']);
-	gulp.watch('./src/app/**/*.js', ['scripts']);
+	gulp.watch(config.sources.index, ['index']);
+	gulp.watch(config.sources.jade, ['views']);
+	gulp.watch(config.sources.styles, ['styles']);
+	gulp.watch(config.sources.scripts, ['scripts']);
 });
 
-gulp.task('build-develop', function(next) {
-	//run('clean', next);
-	return run('clean', ['styles', 'scripts', 'index', 'assets'], next);
-});
-
-gulp.task('build', function(next){
-	return run('build-develop', next);
+gulp.task('build', function(next) {
+	return run('clean', ['styles', 'scripts', 'views', 'assets'], 'index', next);
 });
 
 gulp.task('live', function(next){
 	return run('build', 'watch', next);
+});
+
+gulp.task('production-scripts', function() {
+	return es.merge(files.scripts.map(function (conf) {
+		var stream = src(conf)
+			.pipe(concat(conf.concat));
+		return dest(conf, stream);
+	}));
+});
+
+gulp.task('production-styles', function () {
+	return es.merge(files.styles.map(function (conf) {
+		var stream = src(conf);
+
+		if (conf.less) {
+			stream = stream.pipe(less());
+		}
+
+		return dest(conf, stream);
+	}));
+});
+
+gulp.task('production-views', function() {
+	return gulp.src(config.sources.jade, { base: config.paths.src })
+		.pipe(jade())
+		.pipe(html2js({
+			moduleName: getModuleName
+		}))
+		.pipe(gulp.dest(config.paths.build))
+});
+
+gulp.task('production-index', function () {
+	function extFilter(ext) {
+		return function (name) {
+			return ext === path.extname(name);
+		};
+	}
+
+	function listFiles(source) {
+		var res = source.map(function (conf) {
+			return conf.files.map(function (pattern) {
+				pattern = pattern.replace(/\.(less)$/, '.css');
+
+				return glob.sync(pattern, { cwd: config.paths.build });
+			});
+		});
+
+		return _.uniq(_.flattenDeep(res, true));
+	}
+
+	var _scripts = listFiles(files.scripts)
+		.filter(extFilter('.js'));
+
+	var _styles = listFiles(files.styles)
+		.filter(extFilter('.css'));
+
+	return gulp.src(config.sources.index)
+		.pipe(jade({
+			pretty: true,
+			locals: {
+				production: false,
+				scripts: _scripts,
+				styles: _styles
+			}
+		}))
+		.pipe(gulp.dest(config.paths.build));
+});
+
+gulp.task('build-production', function(next) {
+	return run('clean', ['production-styles', 'production-scripts', 'production-views', 'assets'], 'index', next);
 });

@@ -38,6 +38,7 @@ exports.scripts = [
 			'app/**/*.filter.js',
 			'app/**/*.directive.js',
 			'app/**/*.controller.js',
+			'app/**/*.template.js',
 			'app/**/*.js'
 		],
 
