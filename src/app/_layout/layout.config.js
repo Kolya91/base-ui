@@ -3,19 +3,6 @@
 
     angular
         .module('app.layout')
-        //.config(function ($stateProvider) {
-        //    $stateProvider
-        //        .state('app', {
-        //            url: "/",
-        //            views: {
-        //                'content@': {
-        //                    templateUrl: "app/_layout/layout.template.html",
-        //                    controller: "LayoutController",
-        //                    controllerAs: "layout"
-        //                }
-        //            }
-        //        });
-        //})
         .config(function ($stateProvider, $urlRouterProvider) {
             $urlRouterProvider.otherwise('/');
 
