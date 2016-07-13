@@ -68,7 +68,7 @@ exports.styles = [
 		files: [
 			'fonts/*.less',
 			'app/app.less',
-			'styles/variables.less'
+			'styles/*.less'
 		],
 		min: true,
 		concat: 'styles/app.css',
