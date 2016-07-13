@@ -16,6 +16,8 @@
     "gulp-ng-annotate": "^2.0.0",
     "gulp-ng-html2js": "^0.2.2",
     "gulp-plumber": "^1.1.0",
+    "gulp-uglify": "^1.5.4",
+    "gulp-uglifycss": "^1.0.6",
     "gulp-util": "^3.0.7",
     "lodash": "^4.11.1",
     "path": "^0.12.7",

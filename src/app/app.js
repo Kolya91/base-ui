@@ -3,7 +3,9 @@
 
     var appDependencies = [
         'ui.router',
+        'app.layout',
         'app.header',
+        'app.footer',
         'app.components',
         'app.sample'
     ];

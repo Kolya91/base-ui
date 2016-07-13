@@ -8,7 +8,7 @@
                 .state('app.sample', {
                     url: "/",
                     views: {
-                        'content@': {
+                        'content@app': {
                             templateUrl: "app/sample/sample.template.html",
                             controller: "SampleController",
                             controllerAs: "sample"

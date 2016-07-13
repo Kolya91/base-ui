@@ -3,7 +3,7 @@ exports.scripts = [
 		files: [
 			'components/lodash/lodash.js'
 		],
-
+		min: true,
 		concat: 'scripts/libs.js'
 	},
 	{
@@ -14,7 +14,7 @@ exports.scripts = [
 			'components/angular-animate/angular-animate.js',
 			'components/angular-local-storage/dist/angular-local-storage.js'
 		],
-
+		min: true,
 		concat: 'scripts/ng-core.js'
 	},
 	{
@@ -24,7 +24,7 @@ exports.scripts = [
 			'components/angular-bootstrap/ui-bootstrap-tpls.min.js',
 			'components/ng-dialog/js/ngDialog.min.js'
 		],
-
+		min: true,
 		concat: 'scripts/ng-vendor.js'
 	},
 	{
@@ -41,37 +41,42 @@ exports.scripts = [
 			'app/**/*.template.js',
 			'app/**/*.js'
 		],
-
+		min: true,
 		concat: 'scripts/app.js'
+	},
+	{
+		files: [
+			'app/**/*.template.jade'
+		],
+		min: true,
+		templates: true,
+		concat: 'scripts/templates.js'
 	}
+
 ];
 
 exports.styles = [
 	{
 		files: [
-			'components/ng-dialog/css/ngDialog.min.css'
-		],
-		concat: 'styles/utils.css'
-	},
-	{
-		files: [
 			'components/bootstrap/dist/css/bootstrap.css',
 			'components/bootstrap/dist/css/bootstrap.css.map'
-		]
+		],
+		min: true,
+		concat: 'styles/bootstrap.css'
 	},
 	{
 		files: [
-			'app/app.less'
+			'fonts/*.less',
+			'app/app.less',
+			'styles/variables.less'
 		],
+		min: true,
+		concat: 'styles/app.css',
 		less: true
 	},
 	{
 		files: [
-			'fonts/*.css',
-			'fonts/**/*.ttf',
-			'components/bootstrap/fonts/**/*',
-			'components/font-awesome/fonts/**/*'
-		],
-		concat: 'styles/fonts.css'
+			'components/bootstrap/fonts/**/*.ttf'
+		]
 	}
 ];

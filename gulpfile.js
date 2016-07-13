@@ -13,7 +13,10 @@ var gulp = require('gulp'),
 	filter = require('gulp-filter'),
 	html2js = require('gulp-ng-html2js'),
 	concat = require('gulp-concat'),
-	annotate = require('gulp-ng-annotate');
+	annotate = require('gulp-ng-annotate'),
+	uglifycss = require('gulp-uglifycss'),
+	uglify = require('gulp-uglify');
+
 
 var files = require('./build-files.js');
 
@@ -22,6 +25,7 @@ var config = {
 		index: './src/index.jade',
 		jade: './src/app/**/*.jade',
 		assets: './src/assets/**/*',
+		fonts: './src/fonts/**/*',
 		styles: './src/**/*.less',
 		scripts: './src/app/**/*.js'
 	},
@@ -31,6 +35,11 @@ var config = {
 	}
 };
 
+
+/**
+ * Private help functions
+ *
+ * */
 function src(conf){
 	var _files = conf.files.map(function(f){
 		return path.join(config.paths.src, f);
@@ -55,16 +64,42 @@ function getModuleName(file) {
 	});
 }
 
+/**
+ * Develop tasks
+ * Run `gulp build` for only build application
+ * Run `gulp live` for build and watch files changing
+ * Create js and css files with structure like a src directory
+ *
+ * */
+
+
+/**
+ * @description
+ * Task `clean`. For remove build folder
+ *
+ * */
 gulp.task('clean', function () {
 	return del(config.paths.build);
 });
 
+/**
+ * @description
+ * Task `scripts`.
+ * Get all scripts from build-files.js file configuration and create new js files in build folder
+ *
+ * */
 gulp.task('scripts', function() {
 	return es.merge(files.scripts.map(function (conf) {
 		return dest(conf, src(conf));
 	}));
 });
 
+/**
+ * @description
+ * Task `styles`.
+ * Get all styles from build-files.js file configuration and create new css (compile less) files in build folder
+ *
+ * */
 gulp.task('styles', function () {
 	return es.merge(files.styles.map(function (conf) {
 		var stream = src(conf);
@@ -77,6 +112,12 @@ gulp.task('styles', function () {
 	}));
 });
 
+/**
+ * @description
+ * Task `views`.
+ * Get all jade files from src folder compile html, then create templateCache files in build folder
+ *
+ * */
 gulp.task('views', function() {
 	return gulp.src(config.sources.jade, { base: config.paths.src })
 		.pipe(jade())
@@ -86,11 +127,34 @@ gulp.task('views', function() {
 		.pipe(gulp.dest(config.paths.build))
 });
 
+/**
+ * @description
+ * Task `assets`.
+ * Get all files from assets folder and move to build folder
+ *
+ * */
 gulp.task('assets', function() {
 	return gulp.src(config.sources.assets, { base: config.paths.src })
 		.pipe(gulp.dest(config.paths.build))
 });
 
+/**
+ * @description
+ * Task `fonts`.
+ * Get all font files from fonts folder and move to build folder
+ *
+ * */
+gulp.task('fonts', function() {
+	return gulp.src(config.sources.fonts, { base: config.paths.src })
+		.pipe(gulp.dest(config.paths.build))
+});
+
+/**
+ * @description
+ * Task `index`.
+ * Get add js and css files to index.jade and compile to html
+ *
+ * */
 gulp.task('index', function () {
 	function extFilter(ext) {
 		return function (name) {
@@ -128,6 +192,12 @@ gulp.task('index', function () {
 		.pipe(gulp.dest(config.paths.build));
 });
 
+/**
+ * @description
+ * Task `watch`.
+ * Watch all files in src folder (less, js, jade)
+ *
+ * */
 gulp.task('watch', function () {
 	gulp.watch(config.sources.index, ['index']);
 	gulp.watch(config.sources.jade, ['views']);
@@ -136,17 +206,39 @@ gulp.task('watch', function () {
 });
 
 gulp.task('build', function(next) {
-	return run('clean', ['styles', 'scripts', 'views', 'assets'], 'index', next);
+	return run('clean', ['styles', 'scripts', 'views', 'assets', 'fonts'], 'index', next);
 });
 
 gulp.task('live', function(next){
 	return run('build', 'watch', next);
 });
 
+/**
+ * Production tasks
+ * Run `gulp build-production`
+ * Create minified js and css files
+ *
+ * */
+
 gulp.task('production-scripts', function() {
 	return es.merge(files.scripts.map(function (conf) {
 		var stream = src(conf)
-			.pipe(concat(conf.concat));
+
+		if (conf.templates) {
+			stream = stream.pipe(jade())
+				.pipe(html2js({
+					moduleName: getModuleName
+				}));
+		}
+
+		stream = stream.pipe(concat(conf.concat));
+
+		if (conf.min) {
+			stream = stream
+				.pipe(annotate())
+				.pipe(uglify());
+		}
+
 		return dest(conf, stream);
 	}));
 });
@@ -159,17 +251,14 @@ gulp.task('production-styles', function () {
 			stream = stream.pipe(less());
 		}
 
+		stream = stream.pipe(concat(conf.concat));
+
+		if (conf.min) {
+			stream = stream.pipe(uglifycss());
+		}
+
 		return dest(conf, stream);
 	}));
-});
-
-gulp.task('production-views', function() {
-	return gulp.src(config.sources.jade, { base: config.paths.src })
-		.pipe(jade())
-		.pipe(html2js({
-			moduleName: getModuleName
-		}))
-		.pipe(gulp.dest(config.paths.build))
 });
 
 gulp.task('production-index', function () {
@@ -181,14 +270,10 @@ gulp.task('production-index', function () {
 
 	function listFiles(source) {
 		var res = source.map(function (conf) {
-			return conf.files.map(function (pattern) {
-				pattern = pattern.replace(/\.(less)$/, '.css');
-
-				return glob.sync(pattern, { cwd: config.paths.build });
-			});
+			return glob.sync(conf.concat, { cwd: config.paths.build });
 		});
 
-		return _.uniq(_.flattenDeep(res, true));
+		return _.uniq(_.flatten(res, true));
 	}
 
 	var _scripts = listFiles(files.scripts)
@@ -210,5 +295,5 @@ gulp.task('production-index', function () {
 });
 
 gulp.task('build-production', function(next) {
-	return run('clean', ['production-styles', 'production-scripts', 'production-views', 'assets'], 'index', next);
+	return run('clean', ['production-styles', 'production-scripts', 'assets', 'fonts'], 'production-index', next);
 });
