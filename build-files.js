@@ -43,15 +43,15 @@ exports.scripts = [
 		],
 		min: true,
 		concat: 'scripts/app.js'
-	},
-	{
-		files: [
-			'app/**/*.template.jade'
-		],
-		min: true,
-		templates: true,
-		concat: 'scripts/templates.js'
 	}
+	//{
+	//	files: [
+	//		'app/**/*.template.jade'
+	//	],
+	//	min: true,
+	//	templates: true,
+	//	concat: 'scripts/templates.js'
+	//}
 
 ];
 

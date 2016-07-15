@@ -214,6 +214,7 @@ gulp.task('live', function(next){
 });
 
 /**
+ * !!! IN WORK !!!
  * Production tasks
  * Run `gulp build-production`
  * Create minified js and css files
