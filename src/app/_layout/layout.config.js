@@ -14,7 +14,9 @@
                         controller: "LayoutController"
                     },
                     'sidebar@app': {
-                        templateUrl: 'app/_layout/sidebar/sidebar.template.html'
+                        templateUrl: 'app/_layout/sidebar/sidebar.template.html',
+                        controller: 'SidebarController',
+                        controllerAs: "sb"
                     }
                 }
             });

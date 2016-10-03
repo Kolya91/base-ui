@@ -19,9 +19,11 @@
 
                 signup: function(details){
                     /** Simple validation */
-                    if (!details.username) { return $q.reject('Username is required'); }
                     if (!details.email) { return $q.reject('Email address is required'); }
                     if (!details.password) { return $q.reject('Password is required'); }
+                    if (details.password.length < 6) { return $q.reject('Password is too short'); }
+                    if (!details.confirmPassword) { return $q.reject('Password is required'); }
+                    if (details.password !== details.confirmPassword) { return $q.reject('Password don\'t match'); }
 
                     return ls.set(details)
                         .then(function(user){

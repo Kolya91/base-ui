@@ -1,5 +1,5 @@
 (function() {
     'use strict';
 
-    angular.module('app.layout.footer', []);
+    angular.module('app.layout.sidebar', []);
 })();

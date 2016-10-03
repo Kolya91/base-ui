@@ -19,5 +19,11 @@
                         return $q.reject(error);
                     });
             };
+
+            vm.loginFB = function(){
+                var error = 'There no server side for Facebook login';
+                Notification.error({ message: error });
+                return $q.reject(error);
+            };
         });
 })();
