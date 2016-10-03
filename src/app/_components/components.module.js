@@ -1,11 +1,4 @@
 (function() {
     'use strict';
-
-    /**
-     *
-     * Inject all components
-     *
-     * */
-
-    angular.module('app.components', ['app.components.sample-component']);
+    angular.module('app.components', ['app.components.ui-action']);
 })();

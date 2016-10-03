@@ -1,0 +1,20 @@
+nav.navbar.navbar-default
+    .container-fluid
+        .navbar-header
+            button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1', aria-expanded='false')
+                span.sr-only Toggle navigation
+                span.icon-bar
+                span.icon-bar
+                span.icon-bar
+            a.navbar-brand(ui-sref='app.sample') Testelope
+        #bs-example-navbar-collapse-1.collapse.navbar-collapse
+
+            ul.nav.navbar-nav.navbar-right
+                li
+                    a(ui-sref='app.signup') Signup
+.container
+    form.form-signin
+        h2.form-signin-heading.text-center Please login
+        input.form-control(type='email', placeholder='Email address', ng-model='login.details.email', required='', autofocus='')
+        input.form-control(type='password', placeholder='Password', ng-model='login.details.password', required='')
+        button.btn.btn-lg.btn-primary.btn-block(type='submit', ui-action='login.login()') Login

@@ -3,11 +3,12 @@
 
     var appDependencies = [
         'ui.router',
+        'ui-notification',
         'app.layout',
-        'app.header',
-        'app.footer',
         'app.components',
-        'app.sample'
+        'app.main',
+        'app.login',
+        'app.signup'
     ];
     angular.module('app', appDependencies); // TODO: change application name to project name
 })();

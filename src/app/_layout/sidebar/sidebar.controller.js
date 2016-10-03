@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app.sample')
+        .module('app.layout.footer')
         .controller('FooterController', function(){
             var vm = this;
         });

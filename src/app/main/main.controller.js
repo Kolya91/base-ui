@@ -2,8 +2,8 @@
     'use strict';
 
     angular
-        .module('app.sample')
-        .controller('SampleController', function(){
+        .module('app.main')
+        .controller('MainController', function(){
             var vm = this;
             vm.message = 'Great! It work\'s!'
         });

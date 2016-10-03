@@ -4,7 +4,7 @@
     angular
         .module('app.layout')
         .config(function ($stateProvider, $urlRouterProvider) {
-            $urlRouterProvider.otherwise('/');
+            $urlRouterProvider.otherwise('/main');
 
             $stateProvider.state('app', {
                 abstract: true,
@@ -13,12 +13,8 @@
                         templateUrl: "app/_layout/layout.template.html",
                         controller: "LayoutController"
                     },
-                    'header@app': {
-                        templateUrl: 'app/_header/header.template.html',
-                        controller: 'HeaderController'
-                    },
-                    'footer@app': {
-                        templateUrl: 'app/_footer/footer.template.html'
+                    'sidebar@app': {
+                        templateUrl: 'app/_layout/sidebar/sidebar.template.html'
                     }
                 }
             });

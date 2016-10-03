@@ -6,16 +6,9 @@ nav.navbar.navbar-default
                 span.icon-bar
                 span.icon-bar
                 span.icon-bar
-            a.navbar-brand(ui-sref='app.sample') Simple header
+            a.navbar-brand(ui-sref='app.sample') Testelope
         #bs-example-navbar-collapse-1.collapse.navbar-collapse
-            ul.nav.navbar-nav
-                li.active
-                    a(ui-sref='app.sample')
-                        | Link
-                        span.sr-only (current)
-                li
-                    a(ui-sref='app.sample') Link
 
             ul.nav.navbar-nav.navbar-right
                 li
-                    a(ui-sref='app.sample') Link
+                    a(href='#', ui-action='header.logout()') Loguot

@@ -22,7 +22,8 @@ exports.scripts = [
 			'components/angular-bootstrap/ui-bootstrap.min.js',
 			'components/angular-loading-bar/build/loading-bar.min.js',
 			'components/angular-bootstrap/ui-bootstrap-tpls.min.js',
-			'components/ng-dialog/js/ngDialog.min.js'
+			'components/ng-dialog/js/ngDialog.min.js',
+			'components/angular-ui-notification/dist/angular-ui-notification.min.js'
 		],
 		min: true,
 		concat: 'scripts/ng-vendor.js'
@@ -66,6 +67,12 @@ exports.styles = [
 	},
 	{
 		files: [
+			'components/angular-ui-notification/dist/angular-ui-notification.min.css'
+		],
+		concat: 'styles/vendor.css'
+	},
+	{
+		files: [
 			'fonts/*.less',
 			'app/app.less',
 			'styles/*.less'
@@ -76,7 +83,7 @@ exports.styles = [
 	},
 	{
 		files: [
-			'components/bootstrap/fonts/**/*.ttf'
+			'components/bootstrap/dist/fonts/**/*'
 		]
 	}
 ];
